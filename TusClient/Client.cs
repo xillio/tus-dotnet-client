@@ -80,8 +80,10 @@
                     {
                         if (!locationUri.IsAbsoluteUri)
                         {
-                            locationUri = new Uri(requestUri, locationUri);
+                            locationUri = new Uri("http:" + locationUri);
                         }
+                            
+                        locationUri = new Uri(requestUri.Scheme + "://" +requestUri.Host + ":" + requestUri.Port + locationUri.PathAndQuery);
 
                         return locationUri.ToString();
                     }
