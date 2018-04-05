@@ -1,12 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TusClientConsole", "TusClientConsole\TusClientConsole.vbproj", "{324071A9-3082-4DC0-B727-26B697A669FB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CE7AA067-3451-4252-89F6-859D47938852} = {CE7AA067-3451-4252-89F6-859D47938852}
-	EndProjectSection
-EndProject
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TusClient", "TusClient\TusClient.csproj", "{CE7AA067-3451-4252-89F6-859D47938852}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A1899B56-1CAB-4179-9D45-E402B1AFC2CA}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		TusClient.proj = TusClient.proj
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{324071A9-3082-4DC0-B727-26B697A669FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{324071A9-3082-4DC0-B727-26B697A669FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{324071A9-3082-4DC0-B727-26B697A669FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{324071A9-3082-4DC0-B727-26B697A669FB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE7AA067-3451-4252-89F6-859D47938852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE7AA067-3451-4252-89F6-859D47938852}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE7AA067-3451-4252-89F6-859D47938852}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -25,5 +25,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {36CA1871-4B27-44F8-B336-F5DAEDEE9C3D}
 	EndGlobalSection
 EndGlobal

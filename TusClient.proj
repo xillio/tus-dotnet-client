@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Publish" ToolsVersion="4.0"
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <PropertyGroup>
+        <Configurations>Mac;Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <Config Condition=" '$(Config)' == '' ">Debug</Config>
+        <OutputPath>dist</OutputPath>
+        <Suffix Condition=" '$(Config)' != 'Release' ">SNAPSHOT</Suffix>
+        <NugetFileShare>\\bender.xillio.com\XillioShared\NugetRepo</NugetFileShare>
+        <NugetHost>\\bender.xillio.com</NugetHost>
+        <NugetUser>anonymous</NugetUser>
+        <NugetPassword></NugetPassword>
+        <NuspecFile>$(MSBuildProjectDirectory)/TusClient/TusClient.nuspec</NuspecFile>
+       
+        <OutputPath>dist</OutputPath>
+    </PropertyGroup>
+    <Target Name="Clean">
+        <MsBuild Projects="TusClient.sln" Targets="Clean" Properties="Configuration=$(Config)" />
+    </Target>
+    <Target Name="Build">
+        <Message Text="$(Config)"/>
+        <MSBuild Projects="TusClient.sln" Targets="Build" Properties="Configuration=$(Config)" />
+    </Target>
+    <Target Name="Publish" DependsOnTargets="Build">
+        <Message Text="$(Config)"/>
+        <PropertyGroup>
+          <AssemblyFile>$(MSBuildProjectDirectory)/TusClient/bin/$(Config)/tusclient.dll</AssemblyFile>
+        </PropertyGroup>
+        <GetAssemblyIdentity AssemblyFiles="$(AssemblyFile)">
+            <Output TaskParameter="Assemblies" ItemName="Targets" />
+        </GetAssemblyIdentity>
+        <ItemGroup>
+            <VersionNumber Include="@(Targets->'%(Version)')" />
+            <AssemblyName Include="@(Targets->'%(Name)')" />
+        </ItemGroup>
+        <XmlPoke
+            Namespaces="&lt;Namespace Prefix='nu' Uri='http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd'/&gt;"
+            XmlInputPath="$(NuspecFile)" 
+            Query="/nu:package/nu:metadata/nu:version"
+            Value="@(VersionNumber)" />
+        <Exec 
+          WorkingDirectory="TusClient" 
+          Command="nuget pack -Properties Configuration=$(Config) -suffix $(Suffix)" Condition=" '$(Suffix)' != '' " />
+        <Exec 
+          WorkingDirectory="TusClient"
+          Command="nuget pack -Properties Configuration=$(Config)" Condition=" '$(Suffix)' == '' "/>
+        <PropertyGroup  Condition=" '$(Suffix)' != '' ">
+            <Version>@(VersionNumber)-$(Suffix)</Version>
+        </PropertyGroup>
+        <PropertyGroup  Condition=" '$(Suffix)' == '' ">
+            <Version>@(VersionNumber)</Version>
+        </PropertyGroup>
+        <Exec
+            IgnoreExitCode="true"
+            Command="net use $(NugetHost) /d"/>
+        <Exec
+            IgnoreExitCode="true"
+            Command='net use $(NugetHost) /user:$(NugetUser) "$(NugetPassword)"' />
+        <Exec
+          WorkingDirectory="TusClient"
+          IgnoreExitCode="true"
+          Command='nuget delete @(AssemblyName) $(Version) -noninteractive -Source "$(NugetFileShare)"' />
+        <Exec 
+          WorkingDirectory="TusClient"
+          Command='nuget add @(AssemblyName).$(Version).nupkg -noninteractive -Source "$(NugetFileShare)'/>
+    </Target>
+</Project>
