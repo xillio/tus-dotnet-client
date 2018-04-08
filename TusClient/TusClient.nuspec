@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>TusClient</id>
+    <version>1.0.0.1</version>
+    <title>Tus Dotnet client library</title>
+    <authors>Xillio Nederland B.V.</authors>
+    <owners>Xillio Nederland B.V.</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Dotnet library for the Tus protocl: https://tus.io</description>
+    <releaseNotes>
+    </releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <packageTypes>
+      <packageType name="Dependency" />
+    </packageTypes>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>
