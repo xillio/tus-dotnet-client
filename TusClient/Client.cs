@@ -76,15 +76,12 @@
                 if (response.Headers.ContainsKey("Location"))
                 {
                     Uri locationUri;
-                    if (Uri.TryCreate(response.Headers["Location"], UriKind.Relative, out locationUri))
+                    if (Uri.TryCreate(response.Headers["Location"], UriKind.RelativeOrAbsolute, out locationUri))
                     {
                         if (!locationUri.IsAbsoluteUri)
                         {
-                            locationUri = new Uri("http:" + locationUri);
+                            locationUri = new Uri(requestUri, locationUri);
                         }
-                            
-                        locationUri = new Uri(requestUri.Scheme + "://" +requestUri.Host + ":" + requestUri.Port + locationUri.PathAndQuery);
-
                         return locationUri.ToString();
                     }
                     else
