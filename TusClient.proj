@@ -3,63 +3,26 @@
     xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <PropertyGroup >
+    <PropertyGroup>
         <Configurations>Mac;Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <Config Condition=" '$(Config)' == '' ">Debug</Config>
         <OutputPath>dist</OutputPath>
         <Suffix Condition=" '$(Config)' != 'Release' ">SNAPSHOT</Suffix>
+        <NugetApiKey>e3772959-c7cd-4d2c-af26-c7758cd9a2f8</NugetApiKey>
+        <NugetHost>https://nuget.xillio.com/api/odata</NugetHost>
         <NuspecFile>$(MSBuildProjectDirectory)/TusClient/TusClient.nuspec</NuspecFile>
+        <AssemblyFile>$(MSBuildProjectDirectory)/bin/$(Config)/TusClient.dll</AssemblyFile>
+        <PlatformTarget>x86</PlatformTarget>
         <OutputPath>dist</OutputPath>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(OS)' != 'Unix'">
-        <NugetFileShare>\\bender.xillio.com\XillioShared\NugetRepo</NugetFileShare>
-        <NugetHost>\\bender.xillio.com</NugetHost>
-        <NugetUser>anonymous</NugetUser>
-        <NugetPassword></NugetPassword>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(OS)' == 'Unix'">
-        <NugetFileShare>./nugetrepo</NugetFileShare>
-        <NugetHost>bender.xillio.com/XillioShared/NugetRepo</NugetHost>
-        <NugetUser>GUEST</NugetUser>
-        <NugetPassword></NugetPassword>
-    </PropertyGroup>
     <Target Name="Clean">
-        <MsBuild Projects="TusClient.sln" Targets="Clean" Properties="Configuration=$(Config)" />
+        <MsBuild Projects="TusClient.sln" Targets="Clean"  />
     </Target>
-    <Target Name="Build" DependsOnTargets="Pre">
-        <MSBuild Projects="TusClient.sln" Targets="Build" Properties="Configuration=$(Config)" />      
-        <CallTarget Targets="Post"/>  
+    <Target Name="Build">
+        <MSBuild Projects="TusClient.sln" Targets="Build" Properties="Configuration=$(Config)" />
     </Target>
-    <Target Name="Pre">
-        <Message Text="Running on $(OS)"/>
-        <Exec Condition=" '$(OS)' != 'Unix'"
-            IgnoreExitCode="true"
-            Command="net use $(NugetHost) /d"/>
-        <Exec Condition=" '$(OS)' != 'Unix'"
-            Command='net use $(NugetHost) /user:$(NugetUser) "$(NugetPassword)"' />
-        <Exec Condition=" '$(OS)' == 'Unix'"
-            IgnoreExitCode="true"
-            Command="umount $(NugetFileShare)"/>
-        <Exec Condition=" '$(OS)' == 'Unix'"
-            Command="mkdir -p $(NugetFileShare)"/>
-        <Exec Condition=" '$(OS)' == 'Unix'"
-            Command="mount_smbfs //$(NugetUser)@$(NugetHost) $(NugetFileShare)"/>
-        <Exec
-            Command="nuget sources -Name XillioLocal -Source $(NugetFileShare)" />
-    </Target>
-    <Target Name="Post">
-        <Exec Condition=" '$(OS)' == 'Unix'"
-            Command="umount $(NugetFileShare)"/>
-        <Exec Condition=" '$(OS)' == 'Unix'"
-            Command="rmdir $(NugetFileShare)"/>
-    </Target>
-    <Target Name="Publish" DependsOnTargets="Pre">
-        <Message Text="$(Config)"/>
-        <MSBuild Projects="TusClient.sln" Targets="Build" Properties="Configuration=$(Config)" />  
-        <PropertyGroup>
-          <AssemblyFile>$(MSBuildProjectDirectory)/TusClient/bin/$(Config)/tusclient.dll</AssemblyFile>
-        </PropertyGroup>
+    <Target Name="Publish" DependsOnTargets="Build">
         <GetAssemblyIdentity AssemblyFiles="$(AssemblyFile)">
             <Output TaskParameter="Assemblies" ItemName="Targets" />
         </GetAssemblyIdentity>
@@ -74,26 +37,22 @@
             Value="@(VersionNumber)" />
         <Exec 
           WorkingDirectory="TusClient" 
-          Command="nuget pack -Properties Configuration=$(Config) -suffix $(Suffix)" Condition=" '$(Suffix)' != '' " />
+          Command="nuget pack -suffix $(Suffix)" Condition=" '$(Suffix)' != '' " />
         <Exec 
           WorkingDirectory="TusClient"
-          Command="nuget pack -Properties Configuration=$(Config)" Condition=" '$(Suffix)' == '' "/>
+          Command="nuget pack" Condition=" '$(Suffix)' == '' "/>
         <PropertyGroup  Condition=" '$(Suffix)' != '' ">
             <Version>@(VersionNumber)-$(Suffix)</Version>
         </PropertyGroup>
         <PropertyGroup  Condition=" '$(Suffix)' == '' ">
             <Version>@(VersionNumber)</Version>
         </PropertyGroup>
-        <Exec Condition=" '$(OS)' != 'Unix'"
+        <Exec
           WorkingDirectory="TusClient"
           IgnoreExitCode="true"
-          Command='nuget delete @(AssemblyName) $(Version) -noninteractive -Source $(NugetFileShare)' />
-        <Exec Condition=" '$(OS)' == 'Unix'"
-          WorkingDirectory="TusClient"
-          IgnoreExitCode="true"
-          Command='rm -rf $(NugetFileShare)/@(AssemblyName)/$(Version)' />
+          Command='nuget delete @(AssemblyName) $(Version) $(NugetApiKey) -noninteractive -Source "$(NugetHost)"'/>
         <Exec 
           WorkingDirectory="TusClient"
-          Command='nuget add @(AssemblyName).$(Version).nupkg -noninteractive -Source $(NugetFileShare)'/>
+          Command='nuget push @(AssemblyName).$(Version).nupkg $(NugetApiKey) -noninteractive -Source "$(NugetHost)"'/>
     </Target>
 </Project>

@@ -9,21 +9,22 @@ pipeline {
         stage('Clean') {
             steps {
                 script {
-                    bat "msbuild /t:clean /p:Configuration=Release"
+                    bat "nuget restore"
+                    bat "msbuild TusClient.proj /t:Clean"
                 }
             }
         }
-        stage('Compile & build locally') {
+        stage('compile & build locally') {
             steps {
                 script {
-                    bat "msbuild /t:build /p:Configuration=Release"
+                    bat "msbuild TusClient.proj /t:Build"
                 }
             }
         }
         stage('Publish') {
             steps {
                 script {
-                    bat "msbuild /t:Publish /p:Config=Release tusclient.proj"
+                    bat "msbuild TusClient.proj /t:Publish"
                 }
             }
         }
