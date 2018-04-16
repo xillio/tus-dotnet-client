@@ -12,7 +12,7 @@
         <NugetApiKey>e3772959-c7cd-4d2c-af26-c7758cd9a2f8</NugetApiKey>
         <NugetHost>https://nuget.xillio.com/api/odata</NugetHost>
         <NuspecFile>$(MSBuildProjectDirectory)/TusClient/TusClient.nuspec</NuspecFile>
-        <AssemblyFile>$(MSBuildProjectDirectory)/bin/$(Config)/TusClient.dll</AssemblyFile>
+        <AssemblyFile>$(MSBuildProjectDirectory)/TusClient/bin/$(Config)/TusClient.dll</AssemblyFile>
         <PlatformTarget>x86</PlatformTarget>
         <OutputPath>dist</OutputPath>
     </PropertyGroup>
