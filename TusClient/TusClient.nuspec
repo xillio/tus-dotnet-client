@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>TusClient</id>
-    <version>1.1.0.1</version>
+    <version>$version$</version><!-- This is a placeholder that will be set during build on Jenkins. -->
     <title>Tus Dotnet client library</title>
     <authors>Xillio Nederland B.V.</authors>
     <owners>Xillio Nederland B.V.</owners>
