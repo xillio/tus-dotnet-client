@@ -37,10 +37,10 @@
             Value="@(VersionNumber)" />
         <Exec 
           WorkingDirectory="TusClient" 
-          Command="nuget pack -suffix $(Suffix)" Condition=" '$(Suffix)' != '' " />
+          Command="nuget pack -suffix $(Suffix) -Proporties Configuration=$(Config)" Condition=" '$(Suffix)' != '' " />
         <Exec 
           WorkingDirectory="TusClient"
-          Command="nuget pack" Condition=" '$(Suffix)' == '' "/>
+          Command="nuget pack -Proporties Configuration=$(Config)" Condition=" '$(Suffix)' == '' "/>
         <PropertyGroup  Condition=" '$(Suffix)' != '' ">
             <Version>@(VersionNumber)-$(Suffix)</Version>
         </PropertyGroup>
