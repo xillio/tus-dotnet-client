@@ -75,19 +75,15 @@
             {
                 if (response.Headers.ContainsKey("Location"))
                 {
-                    Uri locationUri;
-                    if (Uri.TryCreate(response.Headers["Location"], UriKind.RelativeOrAbsolute, out locationUri))
-                    {
-                        if (!locationUri.IsAbsoluteUri)
-                        {
-                            locationUri = new Uri(requestUri, locationUri);
-                        }
-                        return locationUri.ToString();
-                    }
-                    else
+                    string location;
+                    var validLocation = response.Headers.TryGetValue("Location", out location) && !string.IsNullOrEmpty(location);
+                    if (!validLocation)
                     {
                         throw new Exception("Invalid Location Header");
                     }
+
+                    Uri locationUri = new Uri(requestUri, response.Headers["Location"]);
+                    return locationUri.ToString();
                 }
                 else
                 {
