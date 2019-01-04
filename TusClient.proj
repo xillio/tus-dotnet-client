@@ -10,6 +10,7 @@
         <OutputPath>dist</OutputPath>
         <Suffix Condition=" '$(Config)' != 'Release' ">SNAPSHOT</Suffix>
         <NugetApiKey></NugetApiKey>
+        <NugetUsername></NugetUsername>
         <NugetHost></NugetHost>
         <NuspecFile>$(MSBuildProjectDirectory)/TusClient/TusClient.nuspec</NuspecFile>
         <AssemblyFile>$(MSBuildProjectDirectory)/TusClient/bin/$(Config)/TusClient.dll</AssemblyFile>
@@ -47,12 +48,8 @@
         <PropertyGroup  Condition=" '$(Suffix)' == '' ">
             <Version>@(VersionNumber)</Version>
         </PropertyGroup>
-        <Exec
-          WorkingDirectory="TusClient"
-          IgnoreExitCode="true"
-          Command='nuget delete @(AssemblyName) $(Version) $(NugetApiKey) -noninteractive -Source "$(NugetHost)"'/>
         <Exec 
           WorkingDirectory="TusClient"
-          Command='nuget push @(AssemblyName).$(Version).nupkg $(NugetApiKey) -noninteractive -Source "$(NugetHost)"'/>
+          Command='nuget push @(AssemblyName).$(Version).nupkg $(NugetUsername):$(NugetApiKey) -noninteractive -Source "$(NugetHost)"'/>
     </Target>
 </Project>
