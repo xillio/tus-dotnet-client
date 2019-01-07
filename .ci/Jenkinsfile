@@ -32,7 +32,7 @@ pipeline {
             }
         }
         stage('Publish') {
-            when { not {branch "master"}}
+            when { {branch "master"}}
             steps {
                 echo "publishing branch"
                 bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG};NugetApiKey=${NUGET_CREDENTIALS_PSW};NugetUsername=${NUGET_CREDENTIALS_USR};NugetHost=${NUGET_SOURCE} /t:Publish"
