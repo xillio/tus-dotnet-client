@@ -1,0 +1,42 @@
+def getBuildConfig() {
+	if(env.BRANCH_NAME == "master") {
+		return "Release"
+	}
+	return "Debug"
+}
+
+pipeline {
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '5'))
+    }
+    agent {
+        node {
+            label 'nuget&&msbuild&&windows'
+        }
+    }
+    environment {
+        BUILD_CONFIG = getBuildConfig()
+        NUGET_CREDENTIALS = credentials("ef205e51-11e9-4ff0-b1a8-e9354fcc4eae")
+        NUGET_SOURCE = "https://api.bintray.com/nuget/xillio/nuget"
+    }
+    stages {
+        stage('Clean') {
+            steps {
+                bat "nuget restore"
+                bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG} /t:Clean"
+            }
+        }
+        stage('compile & build locally') {
+            steps {
+                bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG} /t:Build"
+            }
+        }
+        stage('Publish') {
+            when {branch "master"}
+            steps {
+                echo "publishing branch"
+                bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG};NugetApiKey=${NUGET_CREDENTIALS_PSW};NugetUsername=${NUGET_CREDENTIALS_USR};NugetHost=${NUGET_SOURCE} /t:Publish"
+            }
+        }
+    }
+}
