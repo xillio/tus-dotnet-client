@@ -32,10 +32,9 @@ pipeline {
             }
         }
         stage('Publish') {
+            when { not {branch "master"}}
             steps {
-                if(${BUILD_CONFIG} == "Release") {
-                    bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG};NugetApiKey=${NUGET_CREDENTIALS_PSW};NugetUsername=${NUGET_CREDENTIALS_USR};NugetHost=${NUGET_SOURCE} /t:Publish"
-                }
+                bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG};NugetApiKey=${NUGET_CREDENTIALS_PSW};NugetUsername=${NUGET_CREDENTIALS_USR};NugetHost=${NUGET_SOURCE} /t:Publish"
             }
         }
     }
