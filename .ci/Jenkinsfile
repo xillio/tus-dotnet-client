@@ -22,13 +22,13 @@ pipeline {
     stages {
         stage('Clean') {
             steps {
-                 bat "nuget restore"
-                 bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG} /t:Clean"
+                bat "nuget restore"
+                bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG} /t:Clean"
             }
         }
         stage('compile & build locally') {
             steps {
-                 bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG} /t:Build"
+                bat "msbuild TusClient.proj /p:Config=${env.BUILD_CONFIG} /t:Build"
             }
         }
         stage('Publish') {
