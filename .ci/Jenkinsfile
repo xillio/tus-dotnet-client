@@ -10,15 +10,15 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '5'))
     }
     agent {
-	    node {
+        node {
             label 'nuget&&msbuild&&windows'
-		}
+        }
     }
-	environment {
-		BUILD_CONFIG = getBuildConfig()
-		NUGET_CREDENTIALS = credentials("ef205e51-11e9-4ff0-b1a8-e9354fcc4eae")
-		NUGET_SOURCE = "https://api.bintray.com/nuget/xillio/nuget"
-	}
+    environment {
+        BUILD_CONFIG = getBuildConfig()
+        NUGET_CREDENTIALS = credentials("ef205e51-11e9-4ff0-b1a8-e9354fcc4eae")
+        NUGET_SOURCE = "https://api.bintray.com/nuget/xillio/nuget"
+    }
     stages {
         stage('Clean') {
             steps {
